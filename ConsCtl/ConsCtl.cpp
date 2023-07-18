@@ -94,6 +94,7 @@ class CMyCallbackHandler: public CCallbackHandler
 				reinterpret_cast<PBYTE>(szBuffer),
 				sizeof(szBuffer)
 				);
+
 			/*
 			GetProcessName(
 				pQueuedItem->hProcessId, 
@@ -102,11 +103,15 @@ class CMyCallbackHandler: public CCallbackHandler
 				);
 			*/
 
-			HANDLE hProcess = OpenProcess(
+			// because of delays in the queue, 
+			// not all programs may succeed in getting the `FileName`, 
+			// especially when shutting down, 
+			// the program may have died out but not yet queried the target.
+			HANDLE hProcess = ::OpenProcess(
 				PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pQueuedItem->hProcessId);
 			if (hProcess) {
-				GetModuleFileNameEx(hProcess, NULL, szFileName, MAX_PATH);
-				CloseHandle(hProcess);
+				::GetModuleFileNameEx(hProcess, NULL, szFileName, MAX_PATH);
+				::CloseHandle(hProcess);
 			}
 
 			if (pQueuedItem->bCreate)
