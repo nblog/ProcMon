@@ -73,7 +73,7 @@ class CMyCallbackHandler: public CCallbackHandler
 		PVOID        pvParam
 		)
 	{
-		TCHAR szFileName[MAX_PATH];
+		TCHAR szFileName[MAX_PATH]{};
 		//
 		// Deliberately I decided to put a delay in order to 
 		// demonstrate the queuing / multithreaded functionality 
